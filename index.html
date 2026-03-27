@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Message for You ❤️</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        :root {
+            --primary-pink: #ff4d6d;
+            --soft-bg: #fff5f5;
+        }
+
+        body {
+            background-color: var(--soft-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        #content-wrapper {
+            max-width: 600px;
+            width: 90%;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.1);
+            text-align: center;
+            position: relative;
+        }
+
+        .hidden { display: none; }
+
+        h1 { color: var(--primary-pink); margin-bottom: 20px; }
+
+        .btn {
+            padding: 12px 25px;
+            margin: 10px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        .btn-correct { background-color: var(--primary-pink); color: white; }
+        .btn-wrong { background-color: #eee; color: #777; position: relative; }
+
+        #hint { color: #ff85a1; font-style: italic; margin-top: 15px; min-height: 20px; }
+
+        /* Gallery Styles */
+        .photo-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .photo-stack img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 5px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .photo-stack img:hover { transform: scale(1.05) rotate(2deg); }
+
+        .love-text {
+            font-size: 2.5rem;
+            color: var(--primary-pink);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="content-wrapper" class="animate__animated animate__zoomIn">
+        
+        <div id="quiz-box">
+            <h2 id="question-text">Loading love...</h2>
+            <div id="answer-buttons">
+                </div>
+            <p id="hint"></p>
+        </div>
+
+        <div id="surprise-box" class="hidden">
+            <div class="love-text animate__animated animate__heartBeat animate__infinite">I Love You! ❤️</div>
+            <p>Every day with you is a new adventure. Thank you for being mine.</p>
+            
+            <div class="photo-stack">
+                <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=300" alt="Photo 1">
+                <img src="https://images.unsplash.com/photo-1516589174184-c68526614488?auto=format&fit=crop&w=300" alt="Photo 2">
+                <img src="https://images.unsplash.com/photo-1474552226712-ac0f0961a954?auto=format&fit=crop&w=300" alt="Photo 3">
+                <img src="https://images.unsplash.com/photo-1522673607200-1648832cee98?auto=format&fit=crop&w=300" alt="Photo 4">
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        const quizData = [
+            {
+                question: "Quick test: Who has the most beautiful smile in the world?",
+                answers: [
+                    { text: "My Wife", correct: true },
+                    { text: "A Sunset", correct: false },
+                    { text: "That one actress", correct: false }
+                ],
+                hint: "Hint: She is reading this right now!"
+            },
+            {
+                question: "Where was our most favorite memory together?",
+                answers: [
+                    { text: "The Wedding", correct: true },
+                    { text: "The grocery store", correct: false },
+                    { text: "Waiting for the bus", correct: false }
+                ],
+                hint: "Hint: It involved a lot of dancing and cake!"
+            },
+            {
+                question: "Do you know how much I love you?",
+                answers: [
+                    { text: "To the moon and back", correct: true },
+                    { text: "A little bit", correct: false },
+                    { text: "Only on weekends", correct: false }
+                ],
+                hint: "Hint: It's an infinite amount!"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+
+        const questionEl = document.getElementById('question-text');
+        const answerBtnsEl = document.getElementById('answer-buttons');
+        const hintEl = document.getElementById('hint');
+        const quizBox = document.getElementById('quiz-box');
+        const surpriseBox = document.getElementById('surprise-box');
+
+        function startQuiz() {
+            showQuestion(quizData[currentQuestionIndex]);
+        }
+
+        function showQuestion(data) {
+            questionEl.innerText = data.question;
+            answerBtnsEl.innerHTML = '';
+            hintEl.innerText = '';
+
+            data.answers.forEach(answer => {
+                const button = document.createElement('button');
+                button.innerText = answer.text;
+                button.classList.add('btn');
+                
+                if (answer.correct) {
+                    button.classList.add('btn-correct');
+                    button.addEventListener('click', nextQuestion);
+                } else {
+                    button.classList.add('btn-wrong');
+                    button.addEventListener('mouseover', moveButton);
+                    button.addEventListener('click', () => {
+                        hintEl.innerText = data.hint;
+                        button.classList.add('animate__animated', 'animate__shakeX');
+                        setTimeout(() => button.classList.remove('animate__shakeX'), 500);
+                    });
+                }
+                answerBtnsEl.appendChild(button);
+            });
+        }
+
+        function moveButton(e) {
+            const btn = e.target;
+            // Only move "Wrong" buttons to be playful
+            if(btn.classList.contains('btn-wrong')) {
+                const x = (Math.random() - 0.5) * 200;
+                const y = (Math.random() - 0.5) * 200;
+                btn.style.transform = `translate(${x}px, ${y}px)`;
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                quizBox.classList.add('animate__animated', 'animate__fadeOutLeft');
+                setTimeout(() => {
+                    quizBox.classList.remove('animate__fadeOutLeft');
+                    quizBox.classList.add('animate__fadeInRight');
+                    showQuestion(quizData[currentQuestionIndex]);
+                }, 500);
+            } else {
+                showFinalSurprise();
+            }
+        }
+
+        function showFinalSurprise() {
+            quizBox.classList.add('hidden');
+            surpriseBox.classList.remove('hidden');
+            
+            // Continuous Confetti
+            var duration = 5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+
+        startQuiz();
+    </script>
+</body>
+</html>
