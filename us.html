@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>For My Favorite Person</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #fff5f5; text-align: center; overflow-x: hidden; }
+        #quiz-container, #surprise { margin-top: 100px; }
+        .hidden { display: none; }
+        .btn { padding: 15px 30px; border: none; border-radius: 25px; cursor: pointer; transition: 0.3s; font-size: 1.1rem; }
+        .btn-yes { background: #ff4d6d; color: white; }
+        .btn-no { background: #ccc; color: #555; position: absolute; }
+        .photo-gallery img { width: 300px; margin: 10px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .love-msg { font-size: 3rem; color: #ff4d6d; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="quiz-container">
+        <h1 id="question-text">Is [Your Name] the best husband ever?</h1>
+        <div style="height: 100px; position: relative;">
+            <button class="btn btn-yes" onclick="showSurprise()">YES</button>
+            <button class="btn btn-no" id="no-btn" onmouseover="moveButton()">NO</button>
+        </div>
+        <p id="hint" class="hidden" style="color: #ff4d6d; margin-top: 20px;">Hint: There is only one right answer, honey! 😉</p>
+    </div>
+
+    <div id="surprise" class="hidden animate__animated animate__fadeIn">
+        <div class="love-msg animate__animated animate__heartBeat animate__infinite">I Love You! ❤️</div>
+        <p>You're my everything. Here's to us:</p>
+        <div class="photo-gallery">
+            <img src="https://via.placeholder.com/300x400?text=Your+First+Date" alt="Photo 1">
+            <img src="https://via.placeholder.com/300x400?text=Wedding+Day" alt="Photo 2">
+            <img src="https://via.placeholder.com/300x400?text=Favorite+Memory" alt="Photo 3">
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script>
+        function moveButton() {
+            const btn = document.getElementById('no-btn');
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+            document.getElementById('hint').classList.remove('hidden');
+        }
+
+        function showSurprise() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('surprise').classList.remove('hidden');
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        }
+    </script>
+</body>
+</html>
